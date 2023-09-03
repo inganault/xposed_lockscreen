@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LockscreenTextColor</string>
     <string name="xposed_desc">Change AOSP lock screen clock color for Android 13</string>
-    <string name="about_module">This module is made by YukiHookAPI. \nLearn more https://github.com/fankes/YukiHookAPI</string>
+    <string name="about_module">Source repository \n=> https://github.com/inganault/xposed_lockscreen \nThis module is made with YukiHookAPI. \n=> https://github.com/fankes/YukiHookAPI</string>
     <string name="module_version">Module version: %1$s</string>
     <string name="module_not_activated">Module not activated</string>
     <string name="module_is_activated">Module is activated</string>
