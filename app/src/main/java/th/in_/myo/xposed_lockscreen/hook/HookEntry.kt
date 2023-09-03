@@ -1,6 +1,7 @@
 package th.in_.myo.xposed_lockscreen.hook
 
 import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
+import com.highcapable.yukihookapi.hook.factory.MembersType
 import com.highcapable.yukihookapi.hook.factory.configs
 import com.highcapable.yukihookapi.hook.factory.encase
 import com.highcapable.yukihookapi.hook.type.java.IntClass
@@ -22,31 +23,38 @@ class HookEntry : IYukiHookXposedInit {
         loadApp(name = "com.android.systemui") {
             val lockscreenColor = prefs.get(DataConst.LOCKSCREEN_COLOR)
 
-            findClass("com.android.systemui.shared.clocks.DefaultClockController\$DefaultClockFaceController").hook {
-                injectMember {
-                    constructor { }
-                    afterHook {
-                        val seedColor = field {
-                            name = "seedColor"
-                            type = IntClass
-                        }.get(instance)
-                        @Suppress("RedundantNullableReturnType") val to: Int? = lockscreenColor
-                        seedColor.set(to)
+            val target =
+                "com.android.systemui.shared.clocks.DefaultClockController\$DefaultClockFaceController"
+            if (target.hasClass()) {
+                // Lineage 13 Hook
+                findClass(target).hook {
+                    injectMember {
+                        allMembers(MembersType.CONSTRUCTOR)
+                        afterHook {
+                            val seedColor = field {
+                                name = "seedColor"
+                                type = IntClass
+                            }.get(instance)
+                            @Suppress("RedundantNullableReturnType") val to: Int? =
+                                lockscreenColor
+                            seedColor.set(to)
+                        }
                     }
                 }
-            }
-
-            findClass("com.android.systemui.shared.clocks.AnimatableClockView").hook {
-                injectMember {
-                    method {
-                        name = "animateAppearOnLockscreen"
-                    }
-                    beforeHook {
-                        val lockScreenColor = field {
-                            name = "lockScreenColor"
-                            type = IntType
-                        }.get(instance)
-                        lockScreenColor.set(lockscreenColor)
+            } else {
+                // Emulator (Tiramisu) Hook
+                findClass("com.android.systemui.shared.clocks.AnimatableClockView").hook {
+                    injectMember {
+                        method {
+                            name = "animateAppearOnLockscreen"
+                        }
+                        beforeHook {
+                            val lockScreenColor = field {
+                                name = "lockScreenColor"
+                                type = IntType
+                            }.get(instance)
+                            lockScreenColor.set(lockscreenColor)
+                        }
                     }
                 }
             }
