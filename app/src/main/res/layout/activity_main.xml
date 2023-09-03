@@ -145,6 +145,14 @@
             android:textColor="@color/colorTextGray"
             android:textSize="12sp" />
 
+        <th.in_.myo.xposed_lockscreen.ui.view.MaterialSwitch
+            android:id="@+id/switch_override_lockscreen_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/override_lockscreen_text"
+            android:textColor="@color/colorTextGray"
+            android:textSize="15sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -163,7 +171,40 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/button_pick"
+                android:id="@+id/button_pick_lockscreen"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pick_color" />
+        </LinearLayout>
+
+        <th.in_.myo.xposed_lockscreen.ui.view.MaterialSwitch
+            android:id="@+id/switch_override_notification_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/override_lockscreen_text"
+            android:textColor="@color/colorTextGray"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/notification_color"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button_pick_notification"
                 style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

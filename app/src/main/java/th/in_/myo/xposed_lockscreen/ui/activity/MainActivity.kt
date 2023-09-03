@@ -5,12 +5,15 @@ package th.in_.myo.xposed_lockscreen.ui.activity
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import com.highcapable.yukihookapi.YukiHookAPI
 import com.highcapable.yukihookapi.hook.factory.prefs
+import com.highcapable.yukihookapi.hook.xposed.prefs.YukiHookPrefsBridge
+import com.highcapable.yukihookapi.hook.xposed.prefs.data.PrefsData
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
@@ -25,6 +28,7 @@ class MainActivity : AppCompatActivity() {
      * Get the binding layout object
      */
     private lateinit var binding: ActivityMainBinding
+    private lateinit var prefsBridge: YukiHookPrefsBridge
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,19 +58,38 @@ class MainActivity : AppCompatActivity() {
             Runtime.getRuntime().exec("su -c pkill systemui -9")
         }
 
-        val prefs = applicationContext.prefs()
-        val initColor = prefs.get(DataConst.LOCKSCREEN_COLOR)
-        binding.buttonPick.setBackgroundColor(initColor)
-        binding.buttonPick.setOnClickListener { btn ->
+        prefsBridge = applicationContext.prefs()
+        makePicker(binding.buttonPickLockscreen, DataConst.LOCKSCREEN_COLOR)
+        makePicker(binding.buttonPickNotification, DataConst.NOTIFICATION_COLOR)
+
+        binding.switchOverrideLockscreenColor.isChecked =
+            prefsBridge.get(DataConst.LOCKSCREEN_COLOR_OVERRIDE)
+        binding.switchOverrideLockscreenColor.setOnCheckedChangeListener { button, isChecked ->
+            if (button.isPressed)
+                prefsBridge.edit {
+                    put(DataConst.LOCKSCREEN_COLOR_OVERRIDE, isChecked)
+                }
+        }
+        binding.switchOverrideNotificationColor.isChecked =
+            prefsBridge.get(DataConst.NOTIFICATION_COLOR_OVERRIDE)
+        binding.switchOverrideNotificationColor.setOnCheckedChangeListener { button, isChecked ->
+            if (button.isPressed)
+                prefsBridge.edit {
+                    put(DataConst.NOTIFICATION_COLOR_OVERRIDE, isChecked)
+                }
+        }
+    }
+
+    private fun makePicker(btn: Button, pref: PrefsData<Int>) {
+        btn.setBackgroundColor(prefsBridge.get(pref))
+        btn.setOnClickListener {
             ColorPickerDialog.Builder(this)
-                .setTitle("ColorPicker Dialog")
-                .setPreferenceName("MyColorPickerDialog")
                 .setPositiveButton("Choose",
                     object : ColorEnvelopeListener {
                         override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
                             val color = envelope!!.color
-                            prefs.edit {
-                                put(DataConst.LOCKSCREEN_COLOR, color)
+                            prefsBridge.edit {
+                                put(pref, color)
                             }
                             btn.setBackgroundColor(color)
                         }
@@ -75,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     "Cancel"
                 ) { dialogInterface, _ -> dialogInterface.dismiss() }
                 .apply {
-                    colorPickerView.setInitialColor(initColor)
+                    colorPickerView.setInitialColor(prefsBridge.get(pref))
                 }
                 .setBottomSpace(12)
                 .show()

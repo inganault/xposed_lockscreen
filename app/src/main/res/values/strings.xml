@@ -13,4 +13,7 @@
     <string name="module_settings">Module Settings</string>
     <string name="lockscreen_color">Lockscreen Color</string>
     <string name="pick_color">Pick</string>
+    <string name="override_lockscreen_text">Override lockscreen text color</string>
+    <string name="switch_override_notification_color">Override notification background color</string>
+    <string name="notification_color">Notification Color</string>
 </resources>
