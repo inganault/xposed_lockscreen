@@ -24,6 +24,8 @@ android {
             shrinkResources rootProject.ext.enableR8
             zipAlignEnabled rootProject.ext.enableR8
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
