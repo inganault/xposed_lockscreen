@@ -5,15 +5,20 @@ package th.in_.myo.xposed_lockscreen.ui.activity
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import com.highcapable.yukihookapi.YukiHookAPI
+import com.highcapable.yukihookapi.hook.factory.prefs
+import com.skydoves.colorpickerview.ColorEnvelope
+import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import th.in_.myo.xposed_lockscreen.BuildConfig
 import th.in_.myo.xposed_lockscreen.R
+import th.in_.myo.xposed_lockscreen.application.DataConst
 import th.in_.myo.xposed_lockscreen.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
     /**
@@ -47,6 +52,33 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonRestart.setOnClickListener {
             Runtime.getRuntime().exec("su -c pkill systemui -9")
+        }
+
+        val prefs = applicationContext.prefs()
+        val initColor = prefs.get(DataConst.LOCKSCREEN_COLOR)
+        binding.buttonPick.setBackgroundColor(initColor)
+        binding.buttonPick.setOnClickListener { btn ->
+            ColorPickerDialog.Builder(this)
+                .setTitle("ColorPicker Dialog")
+                .setPreferenceName("MyColorPickerDialog")
+                .setPositiveButton("Choose",
+                    object : ColorEnvelopeListener {
+                        override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
+                            val color = envelope!!.color
+                            prefs.edit {
+                                put(DataConst.LOCKSCREEN_COLOR, color)
+                            }
+                            btn.setBackgroundColor(color)
+                        }
+                    })
+                .setNegativeButton(
+                    "Cancel"
+                ) { dialogInterface, _ -> dialogInterface.dismiss() }
+                .apply {
+                    colorPickerView.setInitialColor(initColor)
+                }
+                .setBottomSpace(12)
+                .show()
         }
     }
 

@@ -135,6 +135,41 @@
         android:paddingRight="15dp"
         android:paddingBottom="15dp">
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.85"
+            android:singleLine="true"
+            android:text="@string/module_settings"
+            android:textColor="@color/colorTextGray"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/lockscreen_color"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button_pick"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pick_color" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/button_restart"
             style="@style/Widget.Material3.Button.TextButton"
