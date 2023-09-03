@@ -5,6 +5,7 @@ package th.in_.myo.xposed_lockscreen.ui.activity
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
@@ -42,6 +43,10 @@ class MainActivity : AppCompatActivity() {
         binding.hideIconInLauncherSwitch.isChecked = isLauncherIconShowing.not()
         binding.hideIconInLauncherSwitch.setOnCheckedChangeListener { button, isChecked ->
             if (button.isPressed) hideOrShowLauncherIcon(isChecked)
+        }
+
+        binding.buttonRestart.setOnClickListener {
+            Runtime.getRuntime().exec("su -c pkill systemui -9")
         }
     }
 
